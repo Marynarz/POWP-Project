@@ -5,13 +5,13 @@ class TraceCollect:
     def __init__(self,traceName):
         self.traceFile = traceName+".txt"
         with open(self.traceFile,"a") as traceFileHook:
-            traceFileHook.write(traceName + " is alive!")
+            traceFileHook.write(traceName + " is alive!\n")
             traceFileHook.close()
         self.traceHeader = traceName
 
     def addTrace(self,traceType,traceMessage):
-        message = datetime.now().time() + " " + self.traceHeader + ": " + traceType + ": " + traceMessage
+        message = str(datetime.now().time()) + " " + self.traceHeader + ": " + traceType + ": " + traceMessage
         with open(self.traceFile,"a") as traceFileHook:
-            traceFileHook.write(message)
+            traceFileHook.write(message+"\n")
             traceFileHook.close()
-            
+
