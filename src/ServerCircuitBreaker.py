@@ -1,11 +1,11 @@
 from src.CircuitBreakerEnum import CircuitBreakerEnum
 
-
 class ServerCircuitBreaker:
     traceCollector = ''
     namePoint = "ServerCircuitCollector"
     circuitStatus = CircuitBreakerEnum.OPEN
     dataQueue = []
+    connDict = {}
 
     def __init__(self,traceCollector):
         self.traceCollector = traceCollector
@@ -37,5 +37,5 @@ class ServerCircuitBreaker:
         elif not self.dataQueue:
             pass
 
-    def registerService(self,):
-        pass
+    def registerService(self,connId,connName):
+        self.connDict[connName] = connId
