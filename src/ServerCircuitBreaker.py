@@ -23,7 +23,7 @@ class ServerCircuitBreaker:
         if self.sendSignal("Connection test"):
             self.circuitStatus = CircuitBreakerEnum.CLOSED
 
-    def sendSignal(self,sendSig):
+    def sendSignal(self,destId, sourceId, sendSig):
         pass
 
     def clearQueue(self):
@@ -36,3 +36,6 @@ class ServerCircuitBreaker:
             self.clearQueue()
         elif not self.dataQueue:
             pass
+
+    def registerService(self,):
+        pass
