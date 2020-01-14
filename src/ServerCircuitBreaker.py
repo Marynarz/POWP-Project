@@ -1,5 +1,6 @@
 from src.CircuitBreakerEnum import CircuitBreakerEnum
 
+
 class ServerCircuitBreaker:
     traceCollector = ''
     namePoint = "ServerCircuitCollector"

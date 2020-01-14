@@ -7,7 +7,7 @@
 from multiprocessing import Pipe
 from src.SignalTypeEnum import SignalTypeEnum
 
-class BankCentralObserver():
+class BankCentralObserver:
     observers = []
     traceObj = ''
     namePoint = 'BankCentralObserver'
@@ -19,13 +19,15 @@ class BankCentralObserver():
         self.traceObj.addTrace("INFO", self.namePoint, "BANK CENTRAL WELCOME!")
         self.receivePort, self.sendPort = Pipe()
 
+    def __del__(self):
+        self.traceObj.addTrace("INFO", self.namePoint, "BANK CENTRAL BYE!")
 
     def attach(self,dataSet):
         if type(dataSet) is tuple:
             self.observers.append(dataSet)
             self.traceObj.addTrace("INFO", self.namePoint, "append "+str(dataSet)+" to observers")
             return True
-        self.traceObj.addTrace("ERROR", self.namePoint, "append "+str(dataSet)+" unsuccesful!")
+        self.traceObj.addTrace("ERROR", self.namePoint, "append "+str(dataSet)+" failed!")
         return False
 
     def detach(self, dataDel):
@@ -36,14 +38,14 @@ class BankCentralObserver():
         self.traceObj.addTrace("ERROR", self.namePoint, str(dataDel)+" not found in observers")
         return False
 
-    def notifyObservers(self,sigSend):
+    def notifyObservers(self, sigSend):
         for items in self.observers:
             items[1].send(sigSend)
             self.traceObj.addTrace("INFO", self.namePoint, sigSend+" send to: "+str(items[0]))
 
     def receiveMessage(self):
         sigRec = self.receivePort.recv()
-        self.traceObj.addTrace("INFO", self.namePoint,"receive: "+str(sigRec))
+        self.traceObj.addTrace("INFO", self.namePoint, "receive: "+str(sigRec))
         if sigRec[0] is SignalTypeEnum.BROADCAST:
             self.notifyObservers(sigRec[2])
         elif sigRec[0] is SignalTypeEnum.ATTACH:
@@ -51,8 +53,11 @@ class BankCentralObserver():
         elif sigRec[0] is SignalTypeEnum.DETACH:
             self.detach(tuple(sigRec[2]))
         elif sigRec[0] is SignalTypeEnum.PRIVSIG:
-            self.sendMessage(sigRec[1],sigRec[2])
+            self.sendMessage(sigRec[1], sigRec[2])
 
-    def sendMessage(self,name,sigSend):
-        self.sendPort.send([SignalTypeEnum.PRIVSIG,name,sigSend])
-        self.traceObj.addTrace("INFO", self.namePoint,"send "+str(sigSend)+" to "+name)
+    def sendMessage(self, name, sigSend):
+        self.sendPort.send([SignalTypeEnum.PRIVSIG, name, sigSend])
+        self.traceObj.addTrace("INFO", self.namePoint, "send "+str(sigSend)+" to "+name)
+
+    def getConnEnds(self):
+        return (self.sendPort, self.receivePort)
