@@ -1,5 +1,5 @@
-from TraceCollect import TraceCollect
+from src.TraceCollect import TraceCollect
 
 testClass = TraceCollect("test")
-testClass.addTrace("Error","Test dodawania")
-testClass.addTrace("Warning","Jeszcze jedno dodanie")
+testClass.addTrace("Error","TEST","Test dodawania")
+testClass.addTrace("Warning","test","Jeszcze jedno dodanie")

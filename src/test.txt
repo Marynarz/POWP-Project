@@ -1,3 +1,3 @@
-test is alive!test is alive!21:34:25.737582 test: Error: Test dodawania21:34:25.737792 test: Warning: Jeszcze jedno dodanietest is alive!
-21:34:59.141173 test: Error: Test dodawania
-21:34:59.141399 test: Warning: Jeszcze jedno dodanie
+test is alive!
+09:50:46.713770 test: Error: TEST: Test dodawania
+09:50:46.714767 test: Warning: test: Jeszcze jedno dodanie
