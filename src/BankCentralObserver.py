@@ -43,6 +43,7 @@ class BankCentralObserver():
 
     def receiveMessage(self):
         sigRec = self.receivePort.recv()
+        self.traceObj.addTrace("INFO", self.namePoint,"receive: "+str(sigRec))
         if sigRec[0] is SignalTypeEnum.BROADCAST:
             self.notifyObservers(sigRec[2])
         elif sigRec[0] is SignalTypeEnum.ATTACH:
@@ -50,7 +51,8 @@ class BankCentralObserver():
         elif sigRec[0] is SignalTypeEnum.DETACH:
             self.detach(tuple(sigRec[2]))
         elif sigRec[0] is SignalTypeEnum.PRIVSIG:
-            pass
+            self.sendMessage(sigRec[1],sigRec[2])
 
-    def sendMessage(self,sigSend):
-        pass
+    def sendMessage(self,name,sigSend):
+        self.sendPort.send([SignalTypeEnum.PRIVSIG,name,sigSend])
+        self.traceObj.addTrace("INFO", self.namePoint,"send "+str(sigSend)+" to "+name)
