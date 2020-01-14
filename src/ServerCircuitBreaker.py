@@ -28,7 +28,7 @@ class ServerCircuitBreaker:
             destId.send("TEST CONNECTION")
             if sourceId.recv():
                 return True
-            elif:
+            else:
                 return False
         else:
             destId.send(sendSig)
