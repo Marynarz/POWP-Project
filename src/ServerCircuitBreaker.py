@@ -19,12 +19,21 @@ class ServerCircuitBreaker:
         elif (self.circuitStatus is CircuitBreakerEnum.CLOSED) and not self.dataQueue:
             pass
 
-    def checkStatus(self):
-        if self.sendSignal("Connection test"):
+    def checkStatus(self, destination):
+        if not self.sendSignal(destination,"Connection test"):
             self.circuitStatus = CircuitBreakerEnum.CLOSED
 
-    def sendSignal(self,destId, sourceId, sendSig):
-        pass
+    def sendSignal(self,destId, sourceId, sendSig, statusCheck):
+        if statusCheck:
+            destId.send("TEST CONNECTION")
+            if sourceId.recv():
+                return True
+            elif:
+                return False
+        else:
+            destId.send(sendSig)
+            self.receiveSignal(sourceId.recv())
+        return True
 
     def clearQueue(self):
         if self.dataQueue and self.circuitStatus is CircuitBreakerEnum.CLOSED:
