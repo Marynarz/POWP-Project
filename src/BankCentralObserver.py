@@ -17,7 +17,7 @@ class BankCentralObserver:
     def __init__(self,traceObj):
         self.traceObj = traceObj
         self.traceObj.addTrace("INFO", self.namePoint, "BANK CENTRAL WELCOME!")
-        self.receivePort, self.sendPort = Pipe()
+        self.receivePort, self.sendPort = Pipe(duplex=False)
 
     def __del__(self):
         self.traceObj.addTrace("INFO", self.namePoint, "BANK CENTRAL BYE!")
