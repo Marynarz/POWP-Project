@@ -19,9 +19,11 @@ class BankAccount:
         self.traceObj.addTrace("INFO", self.namePoint, "BANK ACCOUNT BYE!")
 
     def sendMoney(self,name,amount):
-        self.sendPort.send((SignalTypeEnum.PRIVSIG,name,amount))
-        self.amount = self.amount - amount
+        pass
+        #self.sendPort.send((SignalTypeEnum.PRIVSIG,name,amount))
+        #self.amount = self.amount - amount
 
     def receiveMoney(self):
-        receivedAmount = self.receivePort.recv()
-        self.amount = self.amount + int(receivedAmount[2])
+        pass
+        #receivedAmount = self.receivePort.recv()
+        #self.amount = self.amount + int(receivedAmount[2])
