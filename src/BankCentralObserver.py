@@ -5,9 +5,10 @@
 # sygnal : [sygnal, nazwa, tresc]
 
 from multiprocessing import Pipe
+from multiprocessing import Process
 from src.SignalTypeEnum import SignalTypeEnum
 
-class BankCentralObserver:
+class BankCentralObserver(Process):
     observers = []
     traceObj = ''
     namePoint = 'BankCentralObserver'
@@ -18,9 +19,15 @@ class BankCentralObserver:
         self.traceObj = traceObj
         self.traceObj.addTrace("INFO", self.namePoint, "BANK CENTRAL WELCOME!")
         self.receivePort, self.sendPort = Pipe(duplex=False)
+        super(BankCentralObserver,self)
 
     def __del__(self):
         self.traceObj.addTrace("INFO", self.namePoint, "BANK CENTRAL BYE!")
+
+    def run(self):
+        while True:
+            if not self.receiveMessage():
+                break
 
     def attach(self,dataSet):
         if type(dataSet) is tuple:
@@ -54,6 +61,9 @@ class BankCentralObserver:
             self.detach(tuple(sigRec[2]))
         elif sigRec[0] is SignalTypeEnum.PRIVSIG:
             self.sendMessage(sigRec[1], sigRec[2])
+        elif sigRec[0] is SignalTypeEnum.KILLSIG:
+            return False
+        return True
 
     def sendMessage(self, name, sigSend):
         self.sendPort.send([SignalTypeEnum.PRIVSIG, name, sigSend])
