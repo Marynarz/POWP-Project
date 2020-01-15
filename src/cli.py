@@ -2,6 +2,7 @@ from src.ServerCircuitBreaker import ServerCircuitBreaker
 from src.TraceCollect import TraceCollect
 from src.BankCentralObserver import BankCentralObserver
 from src.SignalTypeEnum import SignalTypeEnum
+from src.BankAccountAdapter import BankAccountAdapter
 from multiprocessing import Process
 def main():
     processes = {}
@@ -10,8 +11,10 @@ def main():
     while True:
         x = input('#: ')
         if x is "0":
-            ports[0].send([SignalTypeEnum.KILLSIG,0])
-            processes["BankCentral"].join()
+            for entires in processes:
+                processes[entires].send([SignalTypeEnum.KILLSIG,0])
+                processes[entires].join()
+                print(entires)
             break
         elif x is "1":
             pass
@@ -20,6 +23,11 @@ def main():
             processes["BankCentral"] = BankCentralObserver(traceObj)
             ports = processes["BankCentral"].getConnEnds()
             processes["BankCentral"].start()
+        elif x is "3":
+            accName = input("Nazwa konta: ")
+            accAmount = input("Saldo poczatkowe: ")
+            processes[accName] = BankAccountAdapter(accName,traceObj,accAmount)
+            processes[accName].start()
         elif x is "h":
             helpMenu()
         else:

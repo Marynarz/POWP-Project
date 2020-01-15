@@ -8,8 +8,8 @@ class BankAccount:
     receivePort = ''
     sendPort = ''
     amount = 0
-    def __init__(self,name,traceObj,amount=0):
-        self.amount = amount
+    def __init__(self,name,traceObj,amount):
+        self.amount = int(amount)
         self.selfName = name
         self.traceObj = traceObj
         self.traceObj.addTrace("INFO", self.namePoint, "BANK ACCOUNT WELCOME!")
