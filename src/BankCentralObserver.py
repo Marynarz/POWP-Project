@@ -19,14 +19,16 @@ class BankCentralObserver(Process):
         self.traceObj = traceObj
         self.traceObj.addTrace("INFO", self.namePoint, "BANK CENTRAL WELCOME!")
         self.receivePort, self.sendPort = Pipe(duplex=False)
-        super(BankCentralObserver,self)
+        super(BankCentralObserver,self).__init__()
 
     def __del__(self):
-        self.traceObj.addTrace("INFO", self.namePoint, "BANK CENTRAL BYE!")
+        #self.traceObj.addTrace("INFO", self.namePoint, "BANK CENTRAL BYE!")
+        pass
 
     def run(self):
         while True:
             if not self.receiveMessage():
+                self.traceObj.addTrace("INFO", self.namePoint, "BANK CENTRAL BYE!")
                 break
 
     def attach(self,dataSet):
