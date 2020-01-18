@@ -29,3 +29,6 @@ class BankAccount:
         pass
         #receivedAmount = self.receivePort.recv()
         #self.amount = self.amount + int(receivedAmount[2])
+
+    def getAmount(self):
+        return self.amount
