@@ -1,19 +1,19 @@
-from src.ServerCircuitBreaker import ServerCircuitBreaker
 from src.TraceCollect import TraceCollect
 from src.BankCentralObserver import BankCentralObserver
 from src.SignalTypeEnum import SignalTypeEnum
-from src.BankAccountAdapter import BankAccountAdapter
-from multiprocessing import Process
+from src.TraceCollect import TraceCollect
+
+
 def main():
     processes = {}
     traceObj = TraceCollect("CLI")
     helpMenu()
+    ports = []
     while True:
         x = input('#: ')
         if x is "0":
-            for entires in processes:
-                processes[entires].send([SignalTypeEnum.KILLSIG,0])
-                processes[entires].join()
+            for entires in ports:
+                entires[0].send([SignalTypeEnum.KILLSIG,0])
                 print(entires)
             break
         elif x is "1":
@@ -21,12 +21,13 @@ def main():
             #processes["serv"] = Process(target=ServerCircuitBreaker,args=traceObj)
         elif x is "2":
             processes["BankCentral"] = BankCentralObserver(traceObj)
-            ports = processes["BankCentral"].getConnEnds()
+            ports.append(processes["BankCentral"].getConnEnds())
             processes["BankCentral"].start()
         elif x is "3":
             accName = input("Nazwa konta: ")
             accAmount = input("Saldo poczatkowe: ")
             processes[accName] = BankAccountAdapter(accName,traceObj,accAmount)
+            ports.append(processes[accName].getConnEnds())
             processes[accName].start()
         elif x is "h":
             helpMenu()
@@ -41,8 +42,10 @@ def helpMenu():
     print("Komendy CLI:")
     print("0 - exit")
     print("1 - start circuit breakera -- nie aktywne")
-    print("2 - start centrali bnak account - observer")
+    print("2 - start centrali bank account - observer")
+    print("3 - start cank account adapter - adapter")
     print("h - pomoc")
+    print("---")
 
 if __name__ == '__main__':
     main()

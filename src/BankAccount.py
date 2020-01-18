@@ -1,18 +1,20 @@
 from multiprocessing import Pipe
-from src.SignalTypeEnum import SignalTypeEnum
+
 
 class BankAccount:
     traceObj =''
-    traceName = "BankAccount"
+    namePoint = "BankAccount"
     selfName = ""
     receivePort = ''
     sendPort = ''
     amount = 0
+
     def __init__(self,name,traceObj,amount):
         self.amount = int(amount)
         self.selfName = name
         self.traceObj = traceObj
         self.traceObj.addTrace("INFO", self.namePoint, "BANK ACCOUNT WELCOME!")
+        self.traceObj.addTrace("INFO", self.namePoint, "Name: "+name+" Amount: "+amount)
         self.receivePort, self.sendPort = Pipe(duplex=False)
 
     def __del__(self):
