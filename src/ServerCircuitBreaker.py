@@ -1,6 +1,6 @@
 from multiprocessing import Pipe
 from multiprocessing import Process
-
+from src.SignalTypeEnum import SignalTypeEnum
 from src.CircuitBreakerEnum import CircuitBreakerEnum
 
 
@@ -20,17 +20,26 @@ class ServerCircuitBreaker(Process):
         self.receivePort, self.sendPort = Pipe(duplex=False)
 
     def __del__(self):
-        self.traceCollector.addTrace("INFO", self.namePoint, "SERVER BYE!")
-
-    def run(self):
         pass
 
-    def receiveSignal(self):
-        recSignal = self.receivePort.recv()
-        if recSignal[1] == "TEST OK":
+    def run(self):
+        while True:
+            received = self.receivePort.recv()
+            if received[0] == SignalTypeEnum.KILLSIG:
+                self.traceObj.addTrace("INFO", self.namePoint, "SERVER BYE!")
+                break
+            else:
+                self.receiveSignal(received)
+
+
+    def receiveSignal(self,rec):
+        recSignal = rec
+        if recSignal[0] == "TEST OK":
             return True
-        elif recSignal [1] != "TEST OK" and self.circuitStatus is CircuitBreakerEnum.OPEN:
+        elif recSignal [0] != "TEST OK" and self.circuitStatus is CircuitBreakerEnum.OPEN:
             return False
+        elif recSignal[0] is SignalTypeEnum.REGISTER:
+            self.registerService(recSignal[1],recSignal[2])
         if self.circuitStatus is CircuitBreakerEnum.OPEN:
             self.dataQueue.append(recSignal)
         elif (self.circuitStatus is CircuitBreakerEnum.CLOSED) and self.dataQueue:
@@ -39,13 +48,14 @@ class ServerCircuitBreaker(Process):
             pass
         return True
 
-    def checkStatus(self, destination):
-        if not self.sendSignal(destination,"Connection test",True):
-            self.circuitStatus = CircuitBreakerEnum.CLOSED
+    def checkStatus(self):
+        for key in self.connDict:
+            if not self.sendSignal(self.connDict[key],"Connection test",True):
+                self.circuitStatus = CircuitBreakerEnum.CLOSED
 
     def sendSignal(self,name, sendSig, statusCheck):
         if statusCheck:
-            self.connDict[name].send("TEST CONNECTION")
+            self.connDict[name].send("TEST")
             receive = self.receivePort.recv()
             if not self.receiveSignal():
                 return True

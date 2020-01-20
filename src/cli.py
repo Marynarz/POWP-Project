@@ -1,7 +1,8 @@
-from src.TraceCollect import TraceCollect
 from src.BankCentralObserver import BankCentralObserver
 from src.SignalTypeEnum import SignalTypeEnum
 from src.TraceCollect import TraceCollect
+from src.ServerCircuitBreaker import ServerCircuitBreaker
+from src.BankAccountAdapter import BankAccountAdapter
 
 
 def main():
@@ -17,8 +18,7 @@ def main():
                 print(entires)
             break
         elif x is "1":
-            pass
-            #processes["serv"] = Process(target=ServerCircuitBreaker,args=traceObj)
+            processes["serv"] = ServerCircuitBreaker(traceObj)
         elif x is "2":
             processes["BankCentral"] = BankCentralObserver(traceObj)
             ports.append(processes["BankCentral"].getConnEnds())

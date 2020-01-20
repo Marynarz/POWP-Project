@@ -26,6 +26,9 @@ class BankAccountAdapter(Process,BankAccount):
             elif received[0] == SignalTypeEnum.PRIVSIG:
                 self.traceObj.addTrace("INFO", self.namePoint2, "Received = "+str(received))
                 self.receiveMoney(int(received[2]))
+            elif received[0] == "TEST":
+                self.sendPort.send("TEST OK")
+                self.traceObj.addTrace("TEST", self.namePoint2, "Received = TEST, send TEST OK")
             else:
                 pass
 
