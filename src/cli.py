@@ -10,6 +10,7 @@ def main():
     traceObj = TraceCollect("CLI")
     helpMenu()
     ports = []
+    circuitBreakerEnds = ()
     while True:
         x = input('#: ')
         if x is "0":
@@ -19,6 +20,7 @@ def main():
             break
         elif x is "1":
             processes["serv"] = ServerCircuitBreaker(traceObj)
+            circuitBreakerEnds = processes["serv"].getConnEnds()
         elif x is "2":
             processes["BankCentral"] = BankCentralObserver(traceObj)
             ports.append(processes["BankCentral"].getConnEnds())
@@ -26,7 +28,7 @@ def main():
         elif x is "3":
             accName = input("Nazwa konta: ")
             accAmount = input("Saldo poczatkowe: ")
-            processes[accName] = BankAccountAdapter(accName,traceObj,accAmount)
+            processes[accName] = BankAccountAdapter(accName,traceObj,accAmount,circuitBreakerEnds[0])
             ports.append(processes[accName].getConnEnds())
             processes[accName].start()
         elif x is "h":

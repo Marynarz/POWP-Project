@@ -7,12 +7,14 @@ from src.SignalTypeEnum import SignalTypeEnum
 class BankAccountAdapter(Process,BankAccount):
     traceObj = ''
     namePoint2 = 'BankAccountAdapter'
+    servEnd = ""
 
-    def __init__(self,name,traceObj,amount):
+    def __init__(self,name,traceObj,amount,servEnd):
         BankAccount.__init__(self,name,traceObj,amount)
         super(BankAccountAdapter, self).__init__()
         self.traceObj = traceObj
         self.traceObj.addTrace("INFO", self.namePoint2, "BANK ACCOUNT ADAPTER WELCOME!")
+        self.servEnd = servEnd
 
     def __del__(self):
         pass
@@ -27,14 +29,14 @@ class BankAccountAdapter(Process,BankAccount):
                 self.traceObj.addTrace("INFO", self.namePoint2, "Received = "+str(received))
                 self.receiveMoney(int(received[2]))
             elif received[0] == "TEST":
-                self.sendPort.send("TEST OK")
+                self.servEnd.send("TEST OK")
                 self.traceObj.addTrace("TEST", self.namePoint2, "Received = TEST, send TEST OK")
             else:
                 pass
 
 
     def sendMoney(self,name,amount):
-        self.sendPort.send((SignalTypeEnum.PRIVSIG,name,amount))
+        self.servEnd.send((SignalTypeEnum.PRIVSIG,name,amount))
         self.amount = self.amount - amount
 
     def getConnEnds(self):
@@ -45,4 +47,4 @@ class BankAccountAdapter(Process,BankAccount):
         self.amount = self.amount + amount
         self.traceObj.addTrace("INFO", self.namePoint2, "New amount: "+str(self.getAmount()))
     def attachToServer(self):
-        self.sendPort(SignalTypeEnum.ATTACH,self.name,self.sendPort)
+        self.servEnd(SignalTypeEnum.ATTACH,self.name,self.sendPort)
