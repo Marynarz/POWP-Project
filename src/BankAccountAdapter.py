@@ -44,3 +44,5 @@ class BankAccountAdapter(Process,BankAccount):
         #receivedAmount = self.receivePort.recv()
         self.amount = self.amount + amount
         self.traceObj.addTrace("INFO", self.namePoint2, "New amount: "+str(self.getAmount()))
+    def attachToServer(self):
+        self.sendPort(SignalTypeEnum.ATTACH,self.name,self.sendPort)

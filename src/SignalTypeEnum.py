@@ -6,4 +6,3 @@ class SignalTypeEnum(Enum):
     DETACH = 3
     PRIVSIG = 4
     KILLSIG = 5
-    REGISTER = 6
